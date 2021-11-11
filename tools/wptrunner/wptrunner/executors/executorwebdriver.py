@@ -354,7 +354,10 @@ class WebDriverProtocol(Protocol):
 
         host, port = self.url.split(":")[1].strip("/"), self.url.split(':')[-1].strip("/")
 
-        capabilities = {"alwaysMatch": self.capabilities}
+        if "alwaysMatch" or "firstMatch" in self.capabilities:
+            capabilities = self.capabilities
+        else:
+            capabilities = {"alwaysMatch": self.capabilities}
         self.webdriver = Session(host, port, capabilities=capabilities)
         self.webdriver.start()
 
