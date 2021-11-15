@@ -88,11 +88,9 @@ function assert_service_worker_is_loaded(url, description) {
 // a SecurityError, and that a CSP event fires.
 function assert_worker_is_blocked(url, description) {
   async_test(t => {
-    // If |url| is a blob, it will be stripped down to "blob" for reporting.
-    var reportedURL = new URL(url).protocol == "blob:" ? "blob" : url;
-    waitUntilCSPEventForURL(t, reportedURL)
+    waitUntilCSPEventForURL(t, url)
       .then(t.step_func_done(e => {
-        assert_equals(e.blockedURI, reportedURL);
+        assert_equals(e.blockedURI, url);
         assert_equals(e.violatedDirective, "worker-src");
         assert_equals(e.effectiveDirective, "worker-src");
       }));
@@ -107,11 +105,9 @@ function assert_worker_is_blocked(url, description) {
 
 function assert_shared_worker_is_blocked(url, description) {
   async_test(t => {
-    // If |url| is a blob, it will be stripped down to "blob" for reporting.
-    var reportedURL = new URL(url).protocol == "blob:" ? "blob" : url;
-    waitUntilCSPEventForURL(t, reportedURL)
+    waitUntilCSPEventForURL(t, url)
       .then(t.step_func_done(e => {
-        assert_equals(e.blockedURI, reportedURL);
+        assert_equals(e.blockedURI, url);
         assert_equals(e.violatedDirective, "worker-src");
         assert_equals(e.effectiveDirective, "worker-src");
       }));
@@ -127,12 +123,10 @@ function assert_shared_worker_is_blocked(url, description) {
 function assert_service_worker_is_blocked(url, description) {
   promise_test(t => {
     assert_no_event(t, navigator.serviceWorker, "message");
-    // If |url| is a blob, it will be stripped down to "blob" for reporting.
-    var reportedURL = new URL(url).protocol == "blob:" ? "blob" : url;
     return Promise.all([
-      waitUntilCSPEventForURL(t, reportedURL)
+      waitUntilCSPEventForURL(t, url)
         .then(t.step_func_done(e => {
-          assert_equals(e.blockedURI, reportedURL);
+          assert_equals(e.blockedURI, url);
           assert_equals(e.violatedDirective, "worker-src");
           assert_equals(e.effectiveDirective, "worker-src");
         })),
